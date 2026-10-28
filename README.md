@@ -59,8 +59,8 @@ These are starting estimates, not specs. Each one gets validated in simulation b
 |---|---|---|
 | Robot mass | 6-8 kg | |
 | Leg segments | ~0.2 m thigh, ~0.2 m shank | |
-| Gear ratio | ~6:1 | |
-| Actuator peak torque | ≥12 Nm | |
+| Gear ratio | ~8:1 (was ~6:1, see [0003](docs/decisions/0003-gear-ratio-and-sizing.md)) | |
+| Actuator peak torque | ≥14.4 Nm (was ≥12 Nm; hand sizing in [0003](docs/decisions/0003-gear-ratio-and-sizing.md)) | |
 | Actuator continuous torque | ≥4 Nm | |
 | Battery | 6S LiPo or Li-ion, ~24 V | |
 | CAN buses | 2 buses, 6 actuators each | |
