@@ -349,8 +349,10 @@ Target date · Actual date
 ```
 Robot-Dog/
 ├── README.md               this file: plan, timeline, status
+├── CLAUDE.md               guidance for AI agents helping on this project
 ├── CHANGELOG.md
 ├── docs/
+│   ├── templates/          copy-ready templates for the records below
 │   ├── log/                dated session logs
 │   ├── tests/              test records
 │   ├── decisions/          decision records
