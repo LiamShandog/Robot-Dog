@@ -4,7 +4,7 @@ Guidance for AI agents working in this repo. Read `README.md` first: it holds th
 
 ## What this project is
 
-I'm building a 12-joint quadruped from the motor up: custom actuators, a custom motor driver and FOC firmware, a CAN control loop, and an RL walking policy trained in sim and run on the real robot. I work on it about 15 hours a week, and it gets open-sourced at the end.
+I'm building an 8-joint quadruped (two joints per leg, inspired by ODRI Solo-8, but every part designed by me) from the motor up: custom actuators, a custom motor driver and FOC firmware, a CAN control loop, and an RL walking policy trained in sim and run on the real robot. I work on it about 15 hours a week, and it gets open-sourced at the end.
 
 ## This project is for my learning
 

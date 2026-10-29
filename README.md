@@ -1,6 +1,6 @@
 # Robot-Dog: Open-Source Quadruped
 
-A 12-joint quadruped robot (6-8 kg) built from the motor up: custom quasi-direct-drive actuators, custom motor driver and FOC firmware, a walking policy trained with reinforcement learning in simulation and run on the real robot. Everything gets open-sourced.
+An 8-joint quadruped robot (~2-3 kg, two joints per leg, inspired by [ODRI Solo-8](https://github.com/ToolKnox/hawkridge-odri-solo8-open-quadruped-robot)) built from the motor up: custom quasi-direct-drive actuators, custom motor driver and FOC firmware, a walking policy trained with reinforcement learning in simulation and run on the real robot. Everything gets open-sourced.
 
 **Started:** Oct 28, 2026 · **Planned finish:** Apr 25, 2027 · **Pace:** about 15 hours/week over 26 weeks
 
@@ -13,7 +13,7 @@ A 12-joint quadruped robot (6-8 kg) built from the motor up: custom quasi-direct
 | Gate | Target week | Target date | What has to be true | Status |
 |---|---|---|---|---|
 | G1 | 7 | Dec 13, 2026 | Actuator v1 holds closed-loop torque control; bandwidth and torque constant measured | Not started |
-| G2 | 12 | Jan 17, 2027 | Single leg tracks stance and swing trajectories; sim matches measured response. **Go/no-go for building 12 actuators** | Not started |
+| G2 | 12 | Jan 17, 2027 | Single leg tracks stance and swing trajectories; sim matches measured response. **Go/no-go for building 8 actuators** | Not started |
 | G3 | 15 | Feb 7, 2027 | Custom driver v2 matches v1 performance in the leg test | Not started |
 | G4 | 19 | Mar 7, 2027 | Full robot stands under PD control in a harness; e-stop cuts motor power | Not started |
 | G5 | 24 | Apr 11, 2027 | Robot walks, tracks velocity commands, recovers from a push | Not started |
@@ -27,7 +27,7 @@ Status values: `Not started` · `In progress` · `Met (date, link to gate review
 
 The project is done when **all** of these are true, each backed by a measurement or video in this repo:
 
-- [ ] Walks on flat ground and follows forward, sideways and turning velocity commands (target 0.5 m/s forward)
+- [ ] Walks on flat ground and follows forward/backward and limited turning velocity commands (target 0.5 m/s forward). No sideways walking: legs are planar, see [0005](docs/decisions/0005-8-dof-planar-legs.md)
 - [ ] Recovers from a moderate push without falling, shown on video
 - [ ] Control stack runs at fixed rates: policy at 50 Hz, joint loop at ≥1 kHz, firmware current loop at ≥10 kHz
 - [ ] Runs untethered on battery for ≥20 minutes of mixed standing and walking
@@ -39,7 +39,7 @@ The project is done when **all** of these are true, each backed by a measurement
 A robot that walks well on flat ground, with every layer from motor to policy built or understood by me. Everything else is cut or deferred.
 
 **In scope**
-- 12 custom quasi-direct-drive actuators: bought BLDC motor, single-stage planetary gearbox, output encoder, my own housing
+- 8 custom quasi-direct-drive actuators (hip flexion + knee per leg): bought BLDC motor, my own transmission (planetary or timing belt, TBD), output encoder, my own housing
 - Motor driver: off-the-shelf first (v1), then my own PCB and FOC firmware (v2)
 - CAN bus protocol and a real-time joint control loop
 - Legs, body, battery and power distribution, onboard computer, IMU, hardware e-stop
@@ -49,7 +49,7 @@ A robot that walks well on flat ground, with every layer from motor to policy bu
 
 **Out of scope:** vision, mapping, navigation, stairs, arms, winding my own motors, custom battery management (use a commercial BMS), rough-terrain and parkour locomotion.
 
-**Stretch (only after G5):** MPC baseline with a head-to-head comparison against the RL policy, my own IMU or power board, quantified push-recovery tests.
+**Stretch (only after G5):** hip ab/adduction joints (12-DOF v2; the body leaves room for them), MPC baseline with a head-to-head comparison against the RL policy, my own IMU or power board, quantified push-recovery tests.
 
 ## Design targets
 
@@ -57,13 +57,13 @@ These are starting estimates, not specs. Each one gets validated in simulation b
 
 | Parameter | Starting target | Validated value |
 |---|---|---|
-| Robot mass | 6-8 kg | |
-| Leg segments | ~0.2 m thigh, ~0.2 m shank | |
-| Gear ratio | ~8:1 (was ~6:1, see [0003](docs/decisions/0003-gear-ratio-and-sizing.md)) | |
-| Actuator peak torque | ≥14.4 Nm (was ≥12 Nm; hand sizing in [0003](docs/decisions/0003-gear-ratio-and-sizing.md)) | |
-| Actuator continuous torque | ≥4 Nm | |
+| Robot mass | ~2.5-3 kg (was 6-8 kg; 12-DOF estimate was 3.8 kg, see [0005](docs/decisions/0005-8-dof-planar-legs.md)) | |
+| Leg segments | 0.15 m thigh, 0.15 m shank (was 0.2 m; see [0003](docs/decisions/0003-gear-ratio-and-sizing.md)) | |
+| Gear ratio | 9:1 (was 8:1 for a 7 kg robot; see [0003](docs/decisions/0003-gear-ratio-and-sizing.md)) | |
+| Actuator peak torque | TBD per motor, ~300 Kv outrunner class (Solo-8 reference: 2.5 Nm at 12 A; RCTimer 5010 estimate: 5.15 Nm) | |
+| Actuator continuous torque | TBD | |
 | Battery | 6S LiPo or Li-ion, ~24 V | |
-| CAN buses | 2 buses, 6 actuators each | |
+| CAN buses | 2 buses, 4 actuators each | |
 | Control rates | 10 kHz current / 1 kHz joint / 50 Hz policy | |
 
 ---
@@ -85,9 +85,9 @@ These are starting estimates, not specs. Each one gets validated in simulation b
 | A | Simulation model | URDF/MJCF with joint limits, masses, inertias | Robot stands and walks in sim with PD control | `sim/` |
 | B | Actuator mechanical design | One actuator: motor, planetary gearbox, encoder, housing | Runs 1 hour under load with no slip or overheating | `hardware/actuator/` |
 | C | Driver and FOC firmware | v1 on an off-the-shelf driver, v2 on my own PCB and firmware | Closed-loop torque control; v2 matches v1 | `firmware/`, `hardware/driver-pcb/` |
-| D | CAN bus and control loop | Bus protocol, command/state messages, 1 kHz loop | 6 actuators on one bus at 1 kHz with no dropped frames | `control/` |
+| D | CAN bus and control loop | Bus protocol, command/state messages, 1 kHz loop | 4 actuators on one bus at 1 kHz with no dropped frames | `control/` |
 | E | Actuator characterization and system ID | Torque constant, friction, inertia, bandwidth, thermal limits as plots | Fitted model reproduces measured step responses | `sysid/` |
-| F | Single-leg test rig | 3-actuator leg on a vertical boom | Tracks stance and swing trajectory; sim matches within tolerance | `hardware/leg-rig/` |
+| F | Single-leg test rig | 2-actuator leg on a vertical boom | Tracks stance and swing trajectory; sim matches within tolerance | `hardware/leg-rig/` |
 | G | Body, power and compute | Frame, battery, power distribution, computer, IMU, e-stop | Powers up, stands on PD, e-stop cuts motor power | `hardware/body/` |
 | H | RL training pipeline | Isaac Lab or legged_gym env, rewards, domain randomization | Policy walks in sim with randomized dynamics | `training/` |
 | I | Deployment runtime | 50 Hz policy inference, state estimation, safety layer | Runs on the robot in a harness without faults | `deploy/` |
@@ -121,7 +121,7 @@ Weeks 9-10 fall over the holidays. If I lose time there, G2 slips, not the go/no
 - [ ] Check GPU access for training (local NVIDIA GPU or cloud option); install Isaac Lab or MuJoCo
 - [ ] Run an existing open quadruped (Unitree-style URDF) walking with a pretrained or example policy, to learn the pipeline
 - [ ] Read the Mini Cheetah actuator paper and the moteus / Open Dynamic Robot Initiative designs
-- [ ] Rough-size the actuator from the simulated peak torque and speed of a 6-8 kg robot
+- [ ] Rough-size the actuator from the simulated peak torque and speed of the ~2.5-3 kg 8-DOF robot
 - [ ] Choose a BLDC motor and order: one motor, one off-the-shelf FOC driver, an encoder, a bench supply, a debug probe
 - [ ] Get that motor spinning in position and torque control
 
@@ -160,7 +160,7 @@ Sub-projects: **B**, **C** (v1), **E** (start), **A** (in parallel)
 Sub-projects: **D**, **F**, **E** (model fit), **J**, **A/H** (in parallel)
 
 **Build**
-- [ ] Build 2 more actuators (3 total)
+- [ ] Build 1 more actuator (2 total)
 - [ ] CAN protocol: command and state message definitions, IDs, rates
 - [ ] 1 kHz joint control loop on the host; measure loop jitter and dropped frames
 - [ ] Leg CAD and build; vertical boom rig
@@ -181,13 +181,13 @@ Sub-projects: **D**, **F**, **E** (model fit), **J**, **A/H** (in parallel)
 
 ### Phase 3 · Driver v2 and actuator production · Weeks 13-15 (Jan 18 - Feb 7) → **G3**
 
-Sub-projects: **C** (v2), **B** (×12)
+Sub-projects: **C** (v2), **B** (×8)
 
 **Build**
 - [ ] Driver PCB in KiCad: schematic review, layout, order
 - [ ] FOC firmware on STM32: current loop at ≥10 kHz, encoder, CAN, faults
 - [ ] Bring up v2 on the bench, then in the leg; compare against v1
-- [ ] In parallel: build the remaining 9 actuators, each with a quick acceptance test
+- [ ] In parallel: build the remaining 6 actuators, each with a quick acceptance test
 - [ ] H: domain randomization, latency and noise modeling; policy walks with randomized dynamics
 
 **Document**
@@ -197,7 +197,7 @@ Sub-projects: **C** (v2), **B** (×12)
 - [ ] v1 vs v2 comparison table and plots, same tests as G1
 - [ ] Actuator acceptance sheet: one row per serial number (Kt, friction, backlash, pass/fail)
 - [ ] Training config and reward definitions committed with every policy checkpoint I keep
-- [ ] Gate review G3. If v2 is behind, record the cut-line decision (stay on v1 for all 12)
+- [ ] Gate review G3. If v2 is behind, record the cut-line decision (stay on v1 for all 8)
 
 ### Phase 4 · Full robot · Weeks 16-19 (Feb 8 - Mar 7) → **G4**
 
@@ -205,7 +205,7 @@ Sub-projects: **G**, **D** (2 buses), **I**, **J**
 
 **Build**
 - [ ] Body frame, battery mount, power distribution, BMS, hardware e-stop
-- [ ] Onboard computer and IMU; 2 CAN buses, 6 actuators each, at 1 kHz
+- [ ] Onboard computer and IMU; 2 CAN buses, 4 actuators each, at 1 kHz
 - [ ] Assemble the robot; update the sim model with measured masses and inertias
 - [ ] Deployment runtime: 50 Hz inference, state estimation, safety layer (joint limits, torque limits, watchdog)
 - [ ] Stand under PD control in the harness; test the e-stop under load
@@ -215,7 +215,7 @@ Sub-projects: **G**, **D** (2 buses), **I**, **J**
 - [ ] Weighed mass breakdown per part, compared with the CAD estimate
 - [ ] Updated URDF/MJCF tagged with the robot revision
 - [ ] e-stop test: video plus what got cut and how fast
-- [ ] Bus load and timing with 12 actuators
+- [ ] Bus load and timing with 8 actuators
 - [ ] `deploy/SAFETY.md`: every limit and watchdog in the runtime, and what triggers it
 - [ ] Gate review G4 + milestone video (standing in harness)
 
@@ -227,7 +227,7 @@ Sub-projects: **H**, **I**, **E** (refine)
 - [ ] Run the policy in the harness, robot suspended, then feet barely touching
 - [ ] Ground runs with the harness slack, then untethered
 - [ ] Iterate: compare real vs sim, improve the actuator model, widen randomization, retrain
-- [ ] Velocity command tracking: forward, sideways, turning
+- [ ] Velocity command tracking: forward/backward, turning
 - [ ] Push recovery test
 - [ ] 20-minute battery run
 
@@ -394,7 +394,7 @@ Approximate planning figures, not quotes. Real prices go in `docs/bom.md` as par
 
 | Item | Estimate (USD) | Actual |
 |---|---|---|
-| 12 BLDC motors + gearbox parts + encoders | 1,000-1,800 | |
+| 8 BLDC motors (+1-2 spares) + transmission parts + encoders | Motors under $1,000 CAD total; rest TBD after motor choice (0001) | |
 | Off-the-shelf drivers for v1 (2-3) | 150-300 | |
 | Custom driver PCBs (fab and parts, a few revisions) | 200-500 | |
 | Frame, printing material, fasteners | 150-300 | |
@@ -405,15 +405,15 @@ Approximate planning figures, not quotes. Real prices go in `docs/bom.md` as par
 
 ## Risks and cut lines
 
-The biggest risk is scope: 12 custom actuators plus a custom PCB plus RL is a lot for one person.
+The biggest risk is scope: 8 custom actuators plus a custom PCB plus RL is a lot for one person.
 
 | Risk | Cut line or fallback |
 |---|---|
-| Custom driver PCB takes too long or fails | Stay on an off-the-shelf driver (moteus or ODrive class) for all 12 joints. Keep the custom PCB as a side project on one actuator |
+| Custom driver PCB takes too long or fails | Stay on an off-the-shelf driver (moteus or ODrive class) for all 8 joints. Keep the custom PCB as a side project on one actuator |
 | Actuators too weak, hot or backlashy | Re-size in sim, change the gear ratio, or buy commercial actuators for the knees only |
 | Policy works in sim, falls on the robot | Improve the actuator model from system ID, widen domain randomization, add latency and noise modeling. Fall back to a PD-based stand and trot gait |
 | Training compute | Rent a cloud GPU or switch to MuJoCo MJX |
-| Behind schedule at the end of the single-leg phase | Build a 2-DOF-per-leg planar version, or a single leg hopping on a boom, and ship that |
+| Behind schedule at the end of the single-leg phase | Ship a single leg hopping on a boom (the robot is already the reduced 2-DOF-per-leg version, see [0005](docs/decisions/0005-8-dof-planar-legs.md)) |
 | Hardware damage or injury (LiPo, pinch points, falls) | Harness for every first run, e-stop in hand, current limits in firmware, LiPo in a bag while charging |
 | Losing momentum | Public update every two weeks with a short video or plot |
 

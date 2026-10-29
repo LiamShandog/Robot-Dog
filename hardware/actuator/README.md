@@ -1,6 +1,6 @@
 # B · Actuator mechanical design
 
-**Deliverable:** One actuator: bought BLDC motor, single-stage planetary gearbox, output encoder, own housing
+**Deliverable:** One actuator: bought BLDC motor, own transmission (planetary or timing belt, TBD), output encoder, own housing
 
 **Done when:** Runs 1 hour under load with no slip or overheating
 
