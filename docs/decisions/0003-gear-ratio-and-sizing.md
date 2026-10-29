@@ -32,7 +32,7 @@ Revision 2 replaces the 7 kg / 12-DOF sizing from revision 1 (kept below under [
 |---|---|---|---|---|
 | RCTimer 5010 | 260 | 0.64 Nm (Kt ≈ 0.032 Nm/A × 20 A) | 5.15 Nm | ~3.27 kg |
 | T-Motor MN4004 (Solo-8) | 300 | TBD | TBD | TBD |
-| Motor from the aerospace bay | ~300 | TBD | TBD | TBD |
+| Cobra CM-4510/28 (aerospace bay) | 420 | 0.69 Nm (Kt ≈ 0.0197 Nm/A × 35 A) | 5.58 Nm | ~3.54 kg |
 
 ## Options considered
 
