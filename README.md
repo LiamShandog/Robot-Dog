@@ -118,7 +118,7 @@ Weeks 9-10 fall over the holidays. If I lose time there, G2 slips, not the go/no
 
 **Build**
 - [x] Create the repo, folder structure (below) and this README
-- [ ] Check GPU access for training (local NVIDIA GPU or cloud option); install Isaac Lab or MuJoCo
+- [x] Check GPU access for training (local NVIDIA GPU or cloud option); install Isaac Lab or MuJoCo
 - [ ] Run an existing open quadruped (Unitree-style URDF) walking with a pretrained or example policy, to learn the pipeline
 - [ ] Read the Mini Cheetah actuator paper and the moteus / Open Dynamic Robot Initiative designs
 - [ ] Rough-size the actuator from the simulated peak torque and speed of the ~2.5-3 kg 8-DOF robot

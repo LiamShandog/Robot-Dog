@@ -6,4 +6,4 @@
 
 **Gate:** Feeds H (training) and the sizing of B. Sizing scripts go in `sizing/`.
 
-Status: Not started
+Status: In progress — scene scaffold (`scene.xml`) created; robot body tree (torso + legs) not yet written

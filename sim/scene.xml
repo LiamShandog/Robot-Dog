@@ -1,0 +1,21 @@
+<mujoco model="robot-dog-scene">
+  <compiler angle="radian" inertiafromgeom="auto"/>
+  <option timestep="0.002" gravity="0 0 -9.81"/>
+
+  <asset>
+    <texture type="skybox" builtin="gradient" rgb1="0.3 0.5 0.7" rgb2="0 0 0" width="512" height="512"/>
+    <texture name="groundplane" type="2d" builtin="checker" rgb1="0.2 0.3 0.4" rgb2="0.1 0.2 0.3" width="300" height="300"/>
+    <material name="groundplane" texture="groundplane" texrepeat="5 5" reflectance="0.2"/>
+  </asset>
+
+  <worldbody>
+    <light pos="0 0 3" dir="0 0 -1" diffuse="1 1 1"/>
+    <geom name="floor" type="plane" size="5 5 0.1" material="groundplane"/>
+
+    <!--
+      Robot body tree goes here: torso -> hip joint -> thigh -> knee joint -> shank, x4 legs.
+      This is sub-project A's actual content. Build it from decisions 0003 (9:1, 0.15m/0.15m
+      legs, ~300Kv motor class) and 0005 (8 DOF, planar legs, no hip ab/adduction).
+    -->
+  </worldbody>
+</mujoco>
