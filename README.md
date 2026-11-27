@@ -2,22 +2,22 @@
 
 An 8-joint quadruped robot (~2-3 kg, two joints per leg, inspired by [ODRI Solo-8](https://github.com/ToolKnox/hawkridge-odri-solo8-open-quadruped-robot)) built from the motor up: custom quasi-direct-drive actuators, custom motor driver and FOC firmware, a walking policy trained with reinforcement learning in simulation and run on the real robot. Everything gets open-sourced.
 
-**Started:** Oct 28, 2026 · **Planned finish:** Apr 25, 2027 · **Pace:** about 15 hours/week over 26 weeks
+**Pace:** about 15 hours/week
 
-> If my pace changes, I shift the dates in [Timeline](#timeline), not the gates. A phase is only finished when its gate is met.
+> No deadlines. Phases go in order, and a phase is only finished when its gate is met.
 
 ---
 
 ## Status
 
-| Gate | Target week | Target date | What has to be true | Status |
-|---|---|---|---|---|
-| G1 | 7 | Dec 13, 2026 | Actuator v1 holds closed-loop torque control; bandwidth and torque constant measured | Not started |
-| G2 | 12 | Jan 17, 2027 | Single leg tracks stance and swing trajectories; sim matches measured response. **Go/no-go for building 8 actuators** | Not started |
-| G3 | 15 | Feb 7, 2027 | Custom driver v2 matches v1 performance in the leg test | Not started |
-| G4 | 19 | Mar 7, 2027 | Full robot stands under PD control in a harness; e-stop cuts motor power | Not started |
-| G5 | 24 | Apr 11, 2027 | Robot walks, tracks velocity commands, recovers from a push | Not started |
-| G6 | 26 | Apr 25, 2027 | Repo, build guide and write-up published | Not started |
+| Gate | What has to be true | Status |
+|---|---|---|
+| G1 | Actuator v1 holds closed-loop torque control; bandwidth and torque constant measured | Not started |
+| G2 | Single leg tracks stance and swing trajectories; sim matches measured response. **Go/no-go for building 8 actuators** | Not started |
+| G3 | Custom driver v2 matches v1 performance in the leg test | Not started |
+| G4 | Full robot stands under PD control in a harness; e-stop cuts motor power | Not started |
+| G5 | Robot walks, tracks velocity commands, recovers from a push | Not started |
+| G6 | Repo, build guide and write-up published | Not started |
 
 Status values: `Not started` · `In progress` · `Met (date, link to gate review)` · `Missed (link to decision)`
 
@@ -108,13 +108,11 @@ G + I ──► first walking run
 
 ---
 
-## Timeline
+## Phases
 
-Week 1 starts Monday Oct 26, 2026. Each phase lists what gets built and what gets documented. The documentation column is not optional: a gate review cannot pass without it.
+Each phase lists what gets built and what gets documented. The documentation column is not optional: a gate review cannot pass without it.
 
-Weeks 9-10 fall over the holidays. If I lose time there, G2 slips, not the go/no-go rule.
-
-### Phase 0 · Setup and learning · Weeks 1-2 (Oct 26 - Nov 8)
+### Phase 0 · Setup and learning
 
 **Build**
 - [x] Create the repo, folder structure (below) and this README
@@ -133,7 +131,7 @@ Weeks 9-10 fall over the holidays. If I lose time there, G2 slips, not the go/no
 - [ ] Sizing script and its output plot in `sim/sizing/`
 - [ ] First log entry and first short video (motor spinning)
 
-### Phase 1 · Actuator v1 · Weeks 3-7 (Nov 9 - Dec 13) → **G1**
+### Phase 1 · Actuator v1 → **G1**
 
 Sub-projects: **B**, **C** (v1), **E** (start), **A** (in parallel)
 
@@ -155,7 +153,7 @@ Sub-projects: **B**, **C** (v1), **E** (start), **A** (in parallel)
 - [ ] `docs/decisions/0003-gear-ratio.md`: validated gear ratio and torque numbers, update the design targets table
 - [ ] Gate review G1 + milestone video
 
-### Phase 2 · Single leg · Weeks 8-12 (Dec 14 - Jan 17) → **G2 (go/no-go)**
+### Phase 2 · Single leg → **G2 (go/no-go)**
 
 Sub-projects: **D**, **F**, **E** (model fit), **J**, **A/H** (in parallel)
 
@@ -179,7 +177,7 @@ Sub-projects: **D**, **F**, **E** (model fit), **J**, **A/H** (in parallel)
 - [ ] **Gate review G2 with an explicit go/no-go decision** in `docs/decisions/`. If no-go, record which fallback I'm taking
 - [ ] Milestone video (leg on the boom)
 
-### Phase 3 · Driver v2 and actuator production · Weeks 13-15 (Jan 18 - Feb 7) → **G3**
+### Phase 3 · Driver v2 and actuator production → **G3**
 
 Sub-projects: **C** (v2), **B** (×8)
 
@@ -199,7 +197,7 @@ Sub-projects: **C** (v2), **B** (×8)
 - [ ] Training config and reward definitions committed with every policy checkpoint I keep
 - [ ] Gate review G3. If v2 is behind, record the cut-line decision (stay on v1 for all 8)
 
-### Phase 4 · Full robot · Weeks 16-19 (Feb 8 - Mar 7) → **G4**
+### Phase 4 · Full robot → **G4**
 
 Sub-projects: **G**, **D** (2 buses), **I**, **J**
 
@@ -219,7 +217,7 @@ Sub-projects: **G**, **D** (2 buses), **I**, **J**
 - [ ] `deploy/SAFETY.md`: every limit and watchdog in the runtime, and what triggers it
 - [ ] Gate review G4 + milestone video (standing in harness)
 
-### Phase 5 · Walking · Weeks 20-24 (Mar 8 - Apr 11) → **G5**
+### Phase 5 · Walking → **G5**
 
 Sub-projects: **H**, **I**, **E** (refine)
 
@@ -240,7 +238,7 @@ Sub-projects: **H**, **I**, **E** (refine)
 - [ ] Failure log: every fall, every broken part, and the cause
 - [ ] Gate review G5 + walking video
 
-### Phase 6 · Release · Weeks 25-26 (Apr 12 - Apr 25) → **G6**
+### Phase 6 · Release → **G6**
 
 Sub-project: **L**
 
@@ -348,7 +346,7 @@ Target date · Actual date
 
 ```
 Robot-Dog/
-├── README.md               this file: plan, timeline, status
+├── README.md               this file: plan, phases, status
 ├── CLAUDE.md               guidance for AI agents helping on this project
 ├── CHANGELOG.md
 ├── docs/
@@ -413,11 +411,11 @@ The biggest risk is scope: 8 custom actuators plus a custom PCB plus RL is a lot
 | Actuators too weak, hot or backlashy | Re-size in sim, change the gear ratio, or buy commercial actuators for the knees only |
 | Policy works in sim, falls on the robot | Improve the actuator model from system ID, widen domain randomization, add latency and noise modeling. Fall back to a PD-based stand and trot gait |
 | Training compute | Rent a cloud GPU or switch to MuJoCo MJX |
-| Behind schedule at the end of the single-leg phase | Ship a single leg hopping on a boom (the robot is already the reduced 2-DOF-per-leg version, see [0005](docs/decisions/0005-8-dof-planar-legs.md)) |
+| Single-leg phase stalls | Ship a single leg hopping on a boom (the robot is already the reduced 2-DOF-per-leg version, see [0005](docs/decisions/0005-8-dof-planar-legs.md)) |
 | Hardware damage or injury (LiPo, pinch points, falls) | Harness for every first run, e-stop in hand, current limits in firmware, LiPo in a bag while charging |
 | Losing momentum | Public update every two weeks with a short video or plot |
 
-**Week 12 checkpoint:** if the single leg is not tracking trajectories, drop to a fallback rather than building 12 actuators on an unproven design. Record the decision either way.
+**G2 checkpoint:** if the single leg is not tracking trajectories, drop to a fallback rather than building 12 actuators on an unproven design. Record the decision either way.
 
 ---
 

@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Guidance for AI agents working in this repo. Read `README.md` first: it holds the plan, timeline, gates and current status.
+Guidance for AI agents working in this repo. Read `README.md` first: it holds the plan, phases, gates and current status.
 
 ## What this project is
 
@@ -26,7 +26,7 @@ Documentation is a core deliverable of this project, not an afterthought. The fi
   - Gate status table: `In progress` when a phase starts; `Met`/`Missed` only after I confirm, with a link to the gate review.
   - Phase checklists: tick items only when they are actually done and documented.
   - Design targets "Validated value" and budget "Actual" columns, as numbers are measured or paid (never estimated).
-  - Timeline dates, if the schedule shifts (record why in a decision record).
+  - **No dates or deadlines in the README.** I removed them on purpose so they don't discourage me. Don't add target dates, week numbers or "behind schedule" notes back.
   - Scope, sub-projects, repo structure and tools sections, whenever any of those change.
 
   At the end of a session, check whether the README still matches reality and point out anything stale.
